@@ -4,7 +4,9 @@ var DEBUG_MODE = true;
 // array to store up/down requests in certain order
 var queue = [];
 // directions. up:true, down:false
-var goingup = true;
+var goingup = false;
+var goingdown = false;
+var wait = true;
 // if no request, then running==false
 var running = false;
 // elevator's current floor目前电梯运行到的楼层数
@@ -13,6 +15,11 @@ var currentFloor = 1;
 // top and bottom of the building
 var MAX_FLOOR = 10;
 var MIN_FLOOR = 0;
+
+//描述存在于queue里的楼层是怎么产生的
+var inside = new Array(MAX_FLOOR);
+var outsideUp = new Array(MAX_FLOOR);
+var outsideDown = new Array(MAX_FLOOR);
 
 // global timer
 var timer = null;
@@ -52,20 +59,25 @@ function dial(floor) {
 // key binding
 $(".goup").click(function(){
     var this_id = $(this).parent().parent()[0].id; //只有通过id访问是一个元素，通过标签和class访问的是一个数组（元素列表）
-    dial(Number(this_id.substr(5))); //从下标为5的位置开始取
+    var pressedFloor = Number(this_id.substr(5)); //从下标为5的位置开始取
+    outsideUp[pressedFloor] = true;
+    dial(pressedFloor);
     $(this).addClass("on"); //改变上下按钮为白色
-
 });
 
 $(".godown").click(function(){
     var this_id = $(this).parent().parent()[0].id;
-    dial(Number(this_id.substr(5)));
+    var pressedFloor = Number(this_id.substr(5));
+    outsideDown[pressedFloor] = true;
+    dial(pressedFloor);
     $(this).addClass("on"); //加在现有的class前
 });
 
 $("#dial .button").click(function(){
     var this_id = $(this)[0].id;
-    dial(Number(this_id.substr(4)));
+    var pressedFloor = Number(this_id.substr(4));
+    inside[pressedFloor] = true;
+    dial(pressedFloor);
     $(this).addClass("pressed");
 });
 
@@ -122,9 +134,12 @@ function run() {
         console.log("running:"+running + "  goingup:"+goingup + "  queue:"+queue + " previousFloor:"+currentFloor);
     }
     
-    if(running) {
+    if(running) { //已经升到currentFloor的状态
         if (queue.indexOf(currentFloor) > -1) {    // if elevator is right where it's called
-            ding(currentFloor); //到这层了“ding”~
+            if (inside[currentFloor]) {
+                ding(currentFloor); //到这层了“ding”~
+            }
+            else if (goingup && outsideUp[])
         } else {
             goingup ? moveUp() : moveDown();
             updateFloorInfo();

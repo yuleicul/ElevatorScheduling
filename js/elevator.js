@@ -4,9 +4,7 @@ var DEBUG_MODE = true;
 // array to store up/down requests in certain order
 var queue = [];
 // directions. up:true, down:false
-var goingup = false;
-var goingdown = false;
-var wait = true;
+var goingup = goingup;
 // if no request, then running==false
 var running = false;
 // elevator's current floor目前电梯运行到的楼层数
@@ -84,7 +82,7 @@ $("#dial .button").click(function(){
 
 // kill the lights when arrived
 function lightsOut(floor) {
-    if ($("#floor" + floor + " td a")[0])
+    if ($("#floor" + floor + " td a")[0]) 
         $("#floor" + floor + " td a")[0].className = "goup";
         // $("#floor" + floor + " td a").removeClass("on"); //上下同时都灭了 不可行
     if ($("#floor" + floor + " td a")[1])
@@ -136,10 +134,10 @@ function run() {
     
     if(running) { //已经升到currentFloor的状态
         if (queue.indexOf(currentFloor) > -1) {    // if elevator is right where it's called
-            if (inside[currentFloor]) {
+            // if (inside[currentFloor]) {
                 ding(currentFloor); //到这层了“ding”~
-            }
-            else if (goingup && outsideUp[])
+            // }
+            // else if (goingup && outsideUp[]) 
         } else {
             goingup ? moveUp() : moveDown();
             updateFloorInfo();
@@ -174,8 +172,8 @@ function checkStatus() {
     } else if (currentFloor == MAX_FLOOR) {
         goingup = false;
     } else {
-        (  goingup && (!running || currentFloor < getMaxInQueue(queue)) ) ? goingup = true  : goingup = false;
-        ( !goingup && (!running || currentFloor > getMinInQueue(queue)) ) ? goingup = false : goingup = true;
+        (  goingup && (!running || currentFloor <= getMaxInQueue(queue)) ) ? goingup = true  : goingup = false;
+        ( !goingup && (!running || currentFloor >= getMinInQueue(queue)) ) ? goingup = false : goingup = true;
     }
 }
 

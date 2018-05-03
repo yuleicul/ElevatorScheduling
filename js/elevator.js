@@ -36,6 +36,17 @@ $("#emergency").click(function(){
 });
 
 function openDoor() {
+    // if (timer) {
+    //     clearInterval(timer);
+    // }
+    // openDoor();
+    // //4s后关门 3s后设置timer timer为1s（所以关门开门时间都是4s）
+    // setTimeout(function(){
+    //     closeDoor();
+    //     setTimeout(function(){
+    //         timer = setInterval(run, 1000);
+    //     }, 3000);
+    // }, 4000);
     $("#leftdoor").css("left", 0);
     $("#rightdoor").css("left", "500px");
 }
@@ -45,7 +56,38 @@ function closeDoor() {
     $("#rightdoor").css("left", "350px");
 }
 
-$("#open").click(openDoor);
+function openDoorbyButton() {
+    if (timer) {
+        clearInterval(timer);
+    }
+    openDoor();
+
+    //每过1秒检测一下上一次自动关门时候设置的Timer
+    //4s后关门 3s后设置timer timer为1s（所以关门开门时间都是4s）
+    setTimeout(function(){
+        if (timer) {
+            clearInterval(timer);
+        }
+        setTimeout(function(){
+            if (timer) {
+                clearInterval(timer);
+            }
+            setTimeout(function(){
+                if (timer) {
+                    clearInterval(timer);
+                }
+                setTimeout(function(){
+                    closeDoor();
+                    setTimeout(function(){
+                        timer = setInterval(run, 1000);
+                    }, 3000);
+                }, 1000);
+            }, 1000)
+        }, 1000)
+    }, 1000);
+}
+
+$("#open").click(openDoorbyButton);
 $("#close").click(closeDoor);
 
 // calling the elevator to go certain floor
@@ -181,7 +223,7 @@ function run() {
             }
 
             if (NeedToStop) {
-                 if (timer)
+                if (timer)
                     clearInterval(timer);
                 openDoor();
                 //4s后关门 3s后设置timer timer为1s（所以关门开门时间都是4s）

@@ -11,7 +11,7 @@ var running = false;
 var currentFloor = 1; 
 
 // top and bottom of the building
-var MAX_FLOOR = 10;
+var MAX_FLOOR = 20;
 var MIN_FLOOR = 0;
 
 //描述存在于queue里的楼层是怎么产生的
@@ -47,13 +47,13 @@ function openDoor() {
     //         timer = setInterval(run, 1000);
     //     }, 3000);
     // }, 4000);
-    $("#leftdoor").css("left", 0);
-    $("#rightdoor").css("left", "500px");
+    $("#leftdoor").css("left", "0%");
+    $("#rightdoor").css("left", "45%");
 }
 
 function closeDoor() {
-    $("#leftdoor").css("left", "150px");
-    $("#rightdoor").css("left", "350px");
+    $("#leftdoor").css("left", "15%");
+    $("#rightdoor").css("left", "30%");
 }
 
 function openDoorbyButton() {
@@ -64,10 +64,6 @@ function openDoorbyButton() {
 
     //每过1秒检测一下上一次自动关门时候设置的Timer
     //4s后关门 3s后设置timer timer为1s（所以关门开门时间都是4s）
-    setTimeout(function(){
-        if (timer) {
-            clearInterval(timer);
-        }
         setTimeout(function(){
             if (timer) {
                 clearInterval(timer);
@@ -80,11 +76,10 @@ function openDoorbyButton() {
                     closeDoor();
                     setTimeout(function(){
                         timer = setInterval(run, 1000);
-                    }, 3000);
+                    }, 2000);
                 }, 1000);
             }, 1000)
         }, 1000)
-    }, 1000);
 }
 
 $("#open").click(openDoorbyButton);
@@ -159,23 +154,29 @@ function moveDown() {
 function updateFloorInfo() {
 
     //“elevator”跟随当前楼层上升下降的动画效果
-    $("#bell tr").each(function(){
-        $(this).children()[0].innerHTML = "";
-    });
-    $("#floor"+currentFloor).children()[0].innerHTML = "Elevator"; 
+    // $("#bell tr").each(function(){
+    //     $(this).children()[0].innerHTML = "";
+    // });
+    // $("#floor"+currentFloor).children()[0].innerHTML = "Elevator"; 
 
     //更新外部指示器上的currentFloor
-    $("#indicator li.current").removeClass("current");
-    $("#indicator li")[currentFloor].className = "current"; //不用addClass和函数lightsOut原因一样
+    // $("#indicator li.current").removeClass("current");
+    // $("#indicator li")[currentFloor].className = "current"; //不用addClass和函数lightsOut原因一样
+
+    //门的上下移动效果
+    var ElevatorMove = (currentFloor - 1) * 790 * 0.05;
+    $(".door").css("bottom", ElevatorMove+"px");
+    // $("div").animate({left:'250px'});
 
     //更新内部显示屏和门打开后的currentFloor
     if(currentFloor>0) {
-        $("#floorTitle").text(""+currentFloor);
+        // $("#floorTitle").text(""+currentFloor);
         $("#floorOnScreen").text(""+currentFloor);
-    } else {
-        $("#floorTitle").text("B"+(1-currentFloor));
-        $("#floorOnScreen").text("B"+(1-currentFloor));
     }
+    // } else {
+    //     $("#floorTitle").text("B"+(1-currentFloor));
+    //     $("#floorOnScreen").text("B"+(1-currentFloor));
+    // }
 }
 
 // main algorithm
@@ -225,14 +226,18 @@ function run() {
             if (NeedToStop) {
                 if (timer)
                     clearInterval(timer);
-                openDoor();
-                //4s后关门 3s后设置timer timer为1s（所以关门开门时间都是4s）
+
                 setTimeout(function(){
-                    closeDoor();
+                    openDoor();
+                    //4s后关门 3s后设置timer timer为1s（所以关门开门时间都是4s）
                     setTimeout(function(){
-                        timer = setInterval(run, 1000);
-                    }, 3000);
-                }, 4000);               
+                        closeDoor();
+                        setTimeout(function(){
+                            timer = setInterval(run, 1000);
+                        }, 2000);
+                    }, 2000);
+                }     
+                , 1000);         
             }
             else {
                 goingup ? moveUp() : moveDown();

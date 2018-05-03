@@ -15,9 +15,14 @@ var MAX_FLOOR = 10;
 var MIN_FLOOR = 0;
 
 //描述存在于queue里的楼层是怎么产生的
+//是对应的该种方法产生的值为1，其余为空或0
 var inside = new Array(MAX_FLOOR);
 var outsideUp = new Array(MAX_FLOOR);
 var outsideDown = new Array(MAX_FLOOR);
+
+var INSIDE = 0;
+var OUTSIDE_UP = 1;
+var OUTSIDE_DOWN = 2;
 
 // global timer
 var timer = null;
@@ -45,50 +50,55 @@ $("#close").click(closeDoor);
 
 // calling the elevator to go certain floor
 function dial(floor) {
-    if ( queue.indexOf(floor) < 0 ) {   // Don't add if already exist.
+    // if ( queue.indexOf(floor) < 0 ) {   // Don't add if already exist.
         queue.push(floor);
         // queue.sort(); //排不排序都一样吧？！？！！这个电梯分明就是有毒 就只会上完下 下完上 门外按的是上是下都不管的 这傻逼电梯
         if(!running) {
             checkStatus();
         }
-    }
 }
 
 // key binding
 $(".goup").click(function(){
     var this_id = $(this).parent().parent()[0].id; //只有通过id访问是一个元素，通过标签和class访问的是一个数组（元素列表）
     var pressedFloor = Number(this_id.substr(5)); //从下标为5的位置开始取
-    outsideUp[pressedFloor] = true;
-    dial(pressedFloor);
-    $(this).addClass("on"); //改变上下按钮为白色
+    if (outsideUp[pressedFloor] != 1) {
+        outsideUp[pressedFloor] = 1;
+        dial(pressedFloor);
+        $(this).addClass("on"); //改变上下按钮为白色
+    }
 });
 
 $(".godown").click(function(){
     var this_id = $(this).parent().parent()[0].id;
     var pressedFloor = Number(this_id.substr(5));
-    outsideDown[pressedFloor] = true;
-    dial(pressedFloor);
-    $(this).addClass("on"); //加在现有的class前
+    if (outsideDown[pressedFloor] != 1) {
+        outsideDown[pressedFloor] = 1;
+        dial(pressedFloor);
+        $(this).addClass("on"); //加在现有的class前
+    }
 });
 
 $("#dial .button").click(function(){
     var this_id = $(this)[0].id;
     var pressedFloor = Number(this_id.substr(4));
-    inside[pressedFloor] = true;
-    dial(pressedFloor);
-    $(this).addClass("pressed");
+    if (inside[pressedFloor]!= 1) {
+        inside[pressedFloor] = 1;
+        dial(pressedFloor);
+        $(this).addClass("pressed");       
+    }
 });
 
 
 // kill the lights when arrived
-function lightsOut(floor) {
-    if ($("#floor" + floor + " td a")[0]) 
+function lightsOut(floor, way) {
+    if (way == OUTSIDE_UP && $("#floor" + floor + " td a")[0]) 
         $("#floor" + floor + " td a")[0].className = "goup";
         // $("#floor" + floor + " td a").removeClass("on"); //上下同时都灭了 不可行
-    if ($("#floor" + floor + " td a")[1])
+    else if (way == OUTSIDE_DOWN && $("#floor" + floor + " td a")[1])
         $("#floor" + floor + " td a")[1].className = "godown";
 
-    if ($("#dial" + floor))
+    else if (way == INSIDE && $("#dial" + floor))
         $("#dial" + floor).removeClass("pressed");
 }
 
@@ -133,12 +143,61 @@ function run() {
     }
     
     if(running) { //已经升到currentFloor的状态
+        var NeedToStop = false; //
         if (queue.indexOf(currentFloor) > -1) {    // if elevator is right where it's called
-            // if (inside[currentFloor]) {
-                ding(currentFloor); //到这层了“ding”~
-            // }
-            // else if (goingup && outsideUp[]) 
-        } else {
+            if (inside[currentFloor]) { 
+                lightsOut(currentFloor, INSIDE);
+                removeFromQueue(queue, currentFloor);
+                inside[currentFloor] = 0;
+                NeedToStop = true;
+            }
+            if (goingup) { 
+                if (outsideUp[currentFloor] == 1) {
+                    lightsOut(currentFloor, OUTSIDE_UP);
+                    removeFromQueue(queue, currentFloor);
+                    outsideUp[currentFloor] = 0;
+                    NeedToStop = true;
+                }
+                if (outsideDown[currentFloor] == 1 && currentFloor == getMaxInQueue(queue)) {
+                    lightsOut(currentFloor, OUTSIDE_DOWN);
+                    removeFromQueue(queue, currentFloor);
+                    outsideDown[currentFloor] = 0;
+                    NeedToStop = true;
+                } 
+            }
+            else {
+                if (outsideDown[currentFloor] == 1) {
+                    lightsOut(currentFloor, OUTSIDE_DOWN);
+                    removeFromQueue(queue, currentFloor);
+                    outsideDown[currentFloor] = 0;
+                    NeedToStop = true;
+                }
+                if (outsideUp[currentFloor] == 1 && currentFloor == getMinInQueue(queue)) {
+                    lightsOut(currentFloor, OUTSIDE_UP);
+                    removeFromQueue(queue, currentFloor);
+                    outsideUp[currentFloor] = 0;
+                    NeedToStop = true;
+                }
+            }
+
+            if (NeedToStop) {
+                 if (timer)
+                    clearInterval(timer);
+                openDoor();
+                //4s后关门 3s后设置timer timer为1s（所以关门开门时间都是4s）
+                setTimeout(function(){
+                    closeDoor();
+                    setTimeout(function(){
+                        timer = setInterval(run, 1000);
+                    }, 3000);
+                }, 4000);               
+            }
+            else {
+                goingup ? moveUp() : moveDown();
+                updateFloorInfo();
+            }
+        }
+        else {
             goingup ? moveUp() : moveDown();
             updateFloorInfo();
         }
@@ -146,20 +205,19 @@ function run() {
     }
 }
 
-function ding(floor) {
-    if (timer)
-        clearInterval(timer);
-    lightsOut(floor);
-    removeFromQueue(queue, floor);
-    openDoor();
+function ding(floor, way) {
+    
+    // lightsOut(floor, way);
+    // removeFromQueue(queue, floor);
+    // openDoor();
 
-    //4s后关门 3s后设置timer timer为1s（所以关门开门时间都是4s）
-    setTimeout(function(){
-        closeDoor();
-        setTimeout(function(){
-            timer = setInterval(run, 1000);
-        }, 3000);
-    }, 4000); 
+    // //4s后关门 3s后设置timer timer为1s（所以关门开门时间都是4s）
+    // setTimeout(function(){
+    //     closeDoor();
+    //     setTimeout(function(){
+    //         timer = setInterval(run, 1000);
+    //     }, 3000);
+    // }, 4000); 
 }
 
 // utilities
@@ -231,6 +289,7 @@ function removeFromQueue(queue, floor) {
                 queue[j] = queue[j+1]
             }
             queue.pop();
+            break;
         }
     }
 }

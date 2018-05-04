@@ -43,7 +43,7 @@ function init() {
         goingup[i] = true;
         running[i] = false;
         currentFloor[i] = 1;
-        timer[i] = setInterval("run("+i+")", 1000);
+        timer[i] = setInterval(run(i), 1000);
     }
 
 }
@@ -78,7 +78,7 @@ function openDoorbyButton(n) {
                 setTimeout(function(){
                     closeDoor(n);
                     setTimeout(function(){
-                        timer[n] = setInterval("run("+n+")", 1000);
+                        timer[n] = setInterval(run(n), 1000);
                     }, 2000);
                 }, 1000);
             }, 1000)
@@ -202,25 +202,25 @@ function run(n) {
     if(running[n]) { //已经升到currentFloor的状态
         NeedToStop[n] = false; 
         if (queue[n].indexOf(currentFloor[n]) > -1) {    // if elevator is right where it's called
-            if (inside[n][currentFloor[n]] == 1) { 
-                lightsOut(n, currentFloor[n], INSIDE);
-                removeFromQueue(n, currentFloor[n]);
-                inside[n][currentFloor[n]] = 0;
+            if (inside[currentFloor[n]]) { 
+                lightsOut(currentFloor[n], INSIDE);
+                removeFromQueue(queue[n], currentFloor);
+                inside[currentFloor[n]] = 0;
                 NeedToStop[n] = true;
             }
             if (goingup[n]) { 
                 if (outsideUp[currentFloor[n]] == 1) {
-                    lightsOut(n, currentFloor[n], OUTSIDE_UP);
+                    lightsOut(currentFloor[n], OUTSIDE_UP);
                     for (var i = 0; i < ELE_COUNT; i++) {
-                        removeFromQueue(i, currentFloor[n]);
+                        removeFromQueue(queue[i], currentFloor[n]);
                     }
                     outsideUp[currentFloor[n]] = 0;
                     NeedToStop[n] = true;
                 }
-                if (outsideDown[currentFloor[n]] == 1 && currentFloor[n] == getMaxInQueue(n)) {
-                    lightsOut(n, currentFloor[n], OUTSIDE_DOWN);
+                if (outsideDown[currentFloor[n]] == 1 && currentFloor[n] == getMaxInQueue(queue[n])) {
+                    lightsOut(currentFloor[n], OUTSIDE_DOWN);
                     for (var i = 0; i < ELE_COUNT; i++) {
-                        removeFromQueue(i, currentFloor[n]);
+                        removeFromQueue(queue[i], currentFloor[n]);
                     }
                     outsideDown[currentFloor[n]] = 0;
                     NeedToStop[n] = true;
@@ -228,17 +228,17 @@ function run(n) {
             }
             else {
                 if (outsideDown[currentFloor[n]] == 1) {
-                    lightsOut(n, currentFloor[n], OUTSIDE_DOWN);
+                    lightsOut(currentFloor[n], OUTSIDE_DOWN);
                     for (var i = 0; i < ELE_COUNT; i++) {
-                        removeFromQueue(i, currentFloor[n]);
+                        removeFromQueue(queue[i], currentFloor[n]);
                     }
                     outsideDown[currentFloor[n]] = 0;
                     NeedToStop[n] = true;
                 }
-                if (outsideUp[currentFloor[n]] == 1 && currentFloor[n] == getMinInQueue(n)) {
-                    lightsOut(n, currentFloor[n], OUTSIDE_UP);
+                if (outsideUp[currentFloor[n]] == 1 && currentFloor[n] == getMinInQueue(queue[n])) {
+                    lightsOut(currentFloor[n], OUTSIDE_UP);
                     for (var i = 0; i < ELE_COUNT; i++) {
-                        removeFromQueue(i, currentFloor[n]);
+                        removeFromQueue(queue[i], currentFloor[n]);
                     }
                     outsideUp[currentFloor[n]] = 0;
                     NeedToStop[n] = true;
@@ -255,7 +255,7 @@ function run(n) {
                     setTimeout(function(){
                         closeDoor(n);
                         setTimeout(function(){
-                            timer[n] = setInterval("run("+n+")", 1000);
+                            timer[n] = setInterval(run(n), 1000);
                         }, 2000);
                     }, 2000);
                 }     
@@ -300,8 +300,8 @@ function checkStatus(n) {
     } else if (currentFloor[n] == MAX_FLOOR) {
         goingup[n] = false;
     } else {
-        (  goingup[n] && (!running[n] || currentFloor[n] <= getMaxInQueue(n)) ) ? goingup[n] = true  : goingup[n] = false;
-        ( !goingup[n] && (!running[n] || currentFloor[n] >= getMinInQueue(n)) ) ? goingup[n] = false : goingup[n] = true;
+        (  goingup[n] && (!running[n] || currentFloor[n] <= getMaxInQueue(queue[n])) ) ? goingup[n] = true  : goingup[n] = false;
+        ( !goingup[n] && (!running[n] || currentFloor[n] >= getMinInQueue(queue[n])) ) ? goingup[n] = false : goingup[n] = true;
     }
 }
 
@@ -332,18 +332,18 @@ $(".close").click(function(){
 
 
 // get max from an array
-function getMaxInQueue(n) {
-    if (queue[n].length <= 0) {
+function getMaxInQueue(queue) {
+    if (queue.length <= 0) {
         throw new Error("can't get max from an empty array.");
         return false;
     }
-    if (queue[n].length == 1) {
-        return queue[n][0];
+    if (queue.length == 1) {
+        return queue[0];
     } else {
-        var max = queue[n][0];
-        for(var i in queue[n]) {
-            if (queue[n][i] > max) {
-                max = queue[n][i];
+        var max = queue[0];
+        for(var i in queue) {
+            if (queue[i] > max) {
+                max = queue[i];
             }
         }
         return max;
@@ -351,18 +351,18 @@ function getMaxInQueue(n) {
 }
 
 // get max from an array
-function getMinInQueue(n) {
-    if (queue[n].length <= 0) {
+function getMinInQueue(queue) {
+    if (queue.length <= 0) {
         throw new Error("can't get min from an empty array.");
         return false;
     }
-    if (queue[n].length == 1) {
-        return queue[n][0];
+    if (queue.length == 1) {
+        return queue[0];
     } else {
-        var min = queue[n][0];
-        for(var i in queue[n]) {
-            if (queue[n][i] < min) {
-                max = queue[n][i];
+        var min = queue[0];
+        for(var i in queue) {
+            if (queue[i] < min) {
+                max = queue[i];
             }
         }
         return min;
@@ -370,25 +370,30 @@ function getMinInQueue(n) {
 }
 
 // remove certain floor from queue
-function removeFromQueue(n, floor) {
-    console.log("要删除的数字是"+floor);
-    if (queue[n].indexOf(floor) < 0) {
+function removeFromQueue(queue, floor) {
+    if (queue.indexOf(floor) < 0) {
         throw new Error("Can't remove non-existent floor from queue.");
         return false;
     }
-    if (queue[n].length <= 0) {
+    if (queue.length <= 0) {
         throw new Error("Can't remove floor from empty queue.");
         return false;
     }
-    for (var i=0, len=queue[n].length; i<len; i++) {
-        if (queue[n][i] == floor) {
+    for (var i=0, len=queue.length; i<len; i++) {
+        if (queue[i] == floor) {
             for(var j=i; j<len-1; j++) {
-                queue[n][j] = queue[n][j+1];
+                queue[j] = queue[j+1];
             }
-            queue[n].pop();
+            queue.pop();
             break;
         }
     }
 }
-
+var timers = null;
+timers = setInterval(run(0), 1000);
+// timer[0] = setInterval(run(0), 1000);
+// timer[1] = setInterval(run(1), 1000);
+// timer[2] = setInterval(run(2), 1000);
+// timer[3] = setInterval(run(3), 1000);
+// timer[4] = setInterval(run(4), 1000);
 

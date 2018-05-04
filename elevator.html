@@ -10,16 +10,16 @@
 </head>
 <body>
     
-    <div id="insideView">
-        <div id="elevator">
+    <div class="insideView">
+        <div class="elevator" id="E0">
             <!-- <!--门打开后看见的楼层信息-->
            <!--  <p>Floor <span id="floorTitle">1</span></p> --> -->
     
-            <div class="door" id="leftdoor"></div>
-            <div class="door" id="rightdoor"></div>
+            <div class="door leftdoor"></div>
+            <div class="door rightdoor"></div>
 
-            <div class="panel" id="leftpanel">
-                <div id="floorNumbers">
+            <div class="panel leftpanel">
+                <div class="floorNumbers">
                     <div class="floorNumber">F20</div>
                     <div class="floorNumber">F19</div>
                     <div class="floorNumber">F18</div>
@@ -42,44 +42,350 @@
                     <div class="floorNumber">F1</div>
                 </div>
             </div>
-            <div class="panel" id="rightpanel">
-                <div id="screen">
+            <div class="panel rightpanel">
+                <div class="screen">
                     <!--显示屏上的数字-->
-                    <p id="floorOnScreen">1</p>
+                    <p class="floorOnScreen" id="floorOnScreen0">1</p>
                 </div>
                
-                <div id="buttons">
-                    <div class="button" id="maintain">M</div>
-                    <div class="button" id="emergency">E</div>
-                    <div class="button" id="open">&lt;&gt;</div>
-                    <div class="button" id="close">&gt;&lt;</div>
+                <div class="buttons">
+                    <div class="button maintain">M</div>
+                    <div class="button emergency" >E</div>
+                    <div class="button open" id="openE0">&lt;&gt;</div>
+                    <div class="button close" id="closeE0">&gt;&lt;</div>
                     
-                    <div id="dial">
-                        <div class="button" id="dial19">19</div>
-                       <div class="button" id="dial20">20</div>
-                       <div class="button" id="dial17">17</div>
-                       <div class="button" id="dial18">18</div>
-                       <div class="button" id="dial15">15</div>
-                       <div class="button" id="dial16">16</div>
-                       <div class="button" id="dial13">13</div>
-                       <div class="button" id="dial14">14</div>
-                       <div class="button" id="dial11">11</div>
-                       <div class="button" id="dial12">12</div>
-                       <div class="button" id="dial9">9</div>
-                       <div class="button" id="dial10">10</div>
-                       <div class="button" id="dial7">7</div>
-                       <div class="button" id="dial8">8</div>
-                       <div class="button" id="dial5">5</div>
-                       <div class="button" id="dial6">6</div>
-                       <div class="button" id="dial3">3</div>
-                       <div class="button" id="dial4">4</div>
-                       <div class="button" id="dial1">1</div>
-                       <div class="button" id="dial2">2</div>
+                    <div class="dial" id="dialpad0">
+                       <div class="button dial19">19</div>
+                       <div class="button dial20">20</div>
+                       <div class="button dial17">17</div>
+                       <div class="button dial18">18</div>
+                       <div class="button dial15">15</div>
+                       <div class="button dial16">16</div>
+                       <div class="button dial13">13</div>
+                       <div class="button dial14">14</div>
+                       <div class="button dial11">11</div>
+                       <div class="button dial12">12</div>
+                       <div class="button dial9">9</div>
+                       <div class="button dial10">10</div>
+                       <div class="button dial7">7</div>
+                       <div class="button dial8">8</div>
+                       <div class="button dial5">5</div>
+                       <div class="button dial6">6</div>
+                       <div class="button dial3">3</div>
+                       <div class="button dial4">4</div>
+                       <div class="button dial1">1</div>
+                       <div class="button dial2">2</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+
+
+
+
+
+    <div class="insideView">
+        <div class="elevator" id="E1">
+            <!-- <!--门打开后看见的楼层信息-->
+           <!--  <p>Floor <span id="floorTitle">1</span></p> --> -->
+    
+            <div class="door leftdoor"></div>
+            <div class="door rightdoor"></div>
+
+            <div class="panel leftpanel">
+                <div class="floorNumbers">
+                    <div class="floorNumber">F20</div>
+                    <div class="floorNumber">F19</div>
+                    <div class="floorNumber">F18</div>
+                    <div class="floorNumber">F17</div>
+                    <div class="floorNumber">F16</div>
+                    <div class="floorNumber">F15</div>
+                    <div class="floorNumber">F14</div>
+                    <div class="floorNumber">F13</div>
+                    <div class="floorNumber">F12</div>
+                    <div class="floorNumber">F11</div>
+                    <div class="floorNumber">F10</div>
+                    <div class="floorNumber">F9</div>
+                    <div class="floorNumber">F8</div>
+                    <div class="floorNumber">F7</div>
+                    <div class="floorNumber">F6</div>
+                    <div class="floorNumber">F5</div>
+                    <div class="floorNumber">F4</div>
+                    <div class="floorNumber">F3</div>
+                    <div class="floorNumber">F2</div>
+                    <div class="floorNumber">F1</div>
+                </div>
+            </div>
+            <div class="panel rightpanel">
+                <div class="screen">
+                    <!--显示屏上的数字-->
+                    <p class="floorOnScreen" id="floorOnScreen1">1</p>
+                </div>
+               
+                <div class="buttons">
+                    <div class="button maintain">M</div>
+                    <div class="button emergency" >E</div>
+                    <div class="button open" id="openE1">&lt;&gt;</div>
+                    <div class="button close" id="closeE2">&gt;&lt;</div>
+                    
+                    <div class="dial" id="dialpad1">
+                       <div class="button dial19">19</div>
+                       <div class="button dial20">20</div>
+                       <div class="button dial17">17</div>
+                       <div class="button dial18">18</div>
+                       <div class="button dial15">15</div>
+                       <div class="button dial16">16</div>
+                       <div class="button dial13">13</div>
+                       <div class="button dial14">14</div>
+                       <div class="button dial11">11</div>
+                       <div class="button dial12">12</div>
+                       <div class="button dial9">9</div>
+                       <div class="button dial10">10</div>
+                       <div class="button dial7">7</div>
+                       <div class="button dial8">8</div>
+                       <div class="button dial5">5</div>
+                       <div class="button dial6">6</div>
+                       <div class="button dial3">3</div>
+                       <div class="button dial4">4</div>
+                       <div class="button dial1">1</div>
+                       <div class="button dial2">2</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="insideView">
+        <div class="elevator" id="E2">
+            <!-- <!--门打开后看见的楼层信息-->
+           <!--  <p>Floor <span id="floorTitle">1</span></p> --> -->
+    
+            <div class="door leftdoor"></div>
+            <div class="door rightdoor"></div>
+
+            <div class="panel leftpanel">
+                <div class="floorNumbers">
+                    <div class="floorNumber">F20</div>
+                    <div class="floorNumber">F19</div>
+                    <div class="floorNumber">F18</div>
+                    <div class="floorNumber">F17</div>
+                    <div class="floorNumber">F16</div>
+                    <div class="floorNumber">F15</div>
+                    <div class="floorNumber">F14</div>
+                    <div class="floorNumber">F13</div>
+                    <div class="floorNumber">F12</div>
+                    <div class="floorNumber">F11</div>
+                    <div class="floorNumber">F10</div>
+                    <div class="floorNumber">F9</div>
+                    <div class="floorNumber">F8</div>
+                    <div class="floorNumber">F7</div>
+                    <div class="floorNumber">F6</div>
+                    <div class="floorNumber">F5</div>
+                    <div class="floorNumber">F4</div>
+                    <div class="floorNumber">F3</div>
+                    <div class="floorNumber">F2</div>
+                    <div class="floorNumber">F1</div>
+                </div>
+            </div>
+            <div class="panel rightpanel">
+                <div class="screen">
+                    <!--显示屏上的数字-->
+                    <p class="floorOnScreen" id="floorOnScreen2">1</p>
+                </div>
+               
+                <div class="buttons">
+                    <div class="button maintain">M</div>
+                    <div class="button emergency" >E</div>
+                    <div class="button open" id="openE2">&lt;&gt;</div>
+                    <div class="button close" id="closeE2">&gt;&lt;</div>
+                    
+                    <div class="dial" id="dialpad2">
+                       <div class="button dial19">19</div>
+                       <div class="button dial20">20</div>
+                       <div class="button dial17">17</div>
+                       <div class="button dial18">18</div>
+                       <div class="button dial15">15</div>
+                       <div class="button dial16">16</div>
+                       <div class="button dial13">13</div>
+                       <div class="button dial14">14</div>
+                       <div class="button dial11">11</div>
+                       <div class="button dial12">12</div>
+                       <div class="button dial9">9</div>
+                       <div class="button dial10">10</div>
+                       <div class="button dial7">7</div>
+                       <div class="button dial8">8</div>
+                       <div class="button dial5">5</div>
+                       <div class="button dial6">6</div>
+                       <div class="button dial3">3</div>
+                       <div class="button dial4">4</div>
+                       <div class="button dial1">1</div>
+                       <div class="button dial2">2</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <div class="insideView">
+        <div class="elevator" id="E3">
+            <!-- <!--门打开后看见的楼层信息-->
+           <!--  <p>Floor <span id="floorTitle">1</span></p> --> -->
+    
+            <div class="door leftdoor"></div>
+            <div class="door rightdoor"></div>
+
+            <div class="panel leftpanel">
+                <div class="floorNumbers">
+                    <div class="floorNumber">F20</div>
+                    <div class="floorNumber">F19</div>
+                    <div class="floorNumber">F18</div>
+                    <div class="floorNumber">F17</div>
+                    <div class="floorNumber">F16</div>
+                    <div class="floorNumber">F15</div>
+                    <div class="floorNumber">F14</div>
+                    <div class="floorNumber">F13</div>
+                    <div class="floorNumber">F12</div>
+                    <div class="floorNumber">F11</div>
+                    <div class="floorNumber">F10</div>
+                    <div class="floorNumber">F9</div>
+                    <div class="floorNumber">F8</div>
+                    <div class="floorNumber">F7</div>
+                    <div class="floorNumber">F6</div>
+                    <div class="floorNumber">F5</div>
+                    <div class="floorNumber">F4</div>
+                    <div class="floorNumber">F3</div>
+                    <div class="floorNumber">F2</div>
+                    <div class="floorNumber">F1</div>
+                </div>
+            </div>
+            <div class="panel rightpanel">
+                <div class="screen">
+                    <!--显示屏上的数字-->
+                    <p class="floorOnScreen" id="floorOnScreen3">1</p>
+                </div>
+               
+                <div class="buttons">
+                    <div class="button maintain">M</div>
+                    <div class="button emergency" >E</div>
+                    <div class="button open" id="openE3">&lt;&gt;</div>
+                    <div class="button close" id="closeE3">&gt;&lt;</div>
+                    
+                    <div class="dial" id="dialpad3">
+                       <div class="button dial19">19</div>
+                       <div class="button dial20">20</div>
+                       <div class="button dial17">17</div>
+                       <div class="button dial18">18</div>
+                       <div class="button dial15">15</div>
+                       <div class="button dial16">16</div>
+                       <div class="button dial13">13</div>
+                       <div class="button dial14">14</div>
+                       <div class="button dial11">11</div>
+                       <div class="button dial12">12</div>
+                       <div class="button dial9">9</div>
+                       <div class="button dial10">10</div>
+                       <div class="button dial7">7</div>
+                       <div class="button dial8">8</div>
+                       <div class="button dial5">5</div>
+                       <div class="button dial6">6</div>
+                       <div class="button dial3">3</div>
+                       <div class="button dial4">4</div>
+                       <div class="button dial1">1</div>
+                       <div class="button dial2">2</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="insideView">
+        <div class="elevator" id="E4">
+            <!-- <!--门打开后看见的楼层信息-->
+           <!--  <p>Floor <span id="floorTitle">1</span></p> --> -->
+    
+            <div class="door leftdoor"></div>
+            <div class="door rightdoor"></div>
+
+            <div class="panel leftpanel">
+                <div class="floorNumbers">
+                    <div class="floorNumber">F20</div>
+                    <div class="floorNumber">F19</div>
+                    <div class="floorNumber">F18</div>
+                    <div class="floorNumber">F17</div>
+                    <div class="floorNumber">F16</div>
+                    <div class="floorNumber">F15</div>
+                    <div class="floorNumber">F14</div>
+                    <div class="floorNumber">F13</div>
+                    <div class="floorNumber">F12</div>
+                    <div class="floorNumber">F11</div>
+                    <div class="floorNumber">F10</div>
+                    <div class="floorNumber">F9</div>
+                    <div class="floorNumber">F8</div>
+                    <div class="floorNumber">F7</div>
+                    <div class="floorNumber">F6</div>
+                    <div class="floorNumber">F5</div>
+                    <div class="floorNumber">F4</div>
+                    <div class="floorNumber">F3</div>
+                    <div class="floorNumber">F2</div>
+                    <div class="floorNumber">F1</div>
+                </div>
+            </div>
+            <div class="panel rightpanel">
+                <div class="screen">
+                    <!--显示屏上的数字-->
+                    <p class="floorOnScreen" id="floorOnScreen4">1</p>
+                </div>
+               
+                <div class="buttons">
+                    <div class="button maintain">M</div>
+                    <div class="button emergency" >E</div>
+                    <div class="button open" id="openE4">&lt;&gt;</div>
+                    <div class="button close" id="closeE4">&gt;&lt;</div>
+                    
+                    <div class="dial" id="dialpad4">
+                       <div class="button dial19">19</div>
+                       <div class="button dial20">20</div>
+                       <div class="button dial17">17</div>
+                       <div class="button dial18">18</div>
+                       <div class="button dial15">15</div>
+                       <div class="button dial16">16</div>
+                       <div class="button dial13">13</div>
+                       <div class="button dial14">14</div>
+                       <div class="button dial11">11</div>
+                       <div class="button dial12">12</div>
+                       <div class="button dial9">9</div>
+                       <div class="button dial10">10</div>
+                       <div class="button dial7">7</div>
+                       <div class="button dial8">8</div>
+                       <div class="button dial5">5</div>
+                       <div class="button dial6">6</div>
+                       <div class="button dial3">3</div>
+                       <div class="button dial4">4</div>
+                       <div class="button dial1">1</div>
+                       <div class="button dial2">2</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    
+
 
     <div id="outsideView">
         <ul id="indicator">

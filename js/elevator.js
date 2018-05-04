@@ -26,8 +26,8 @@ var NeedToStop = new Array(ELE_COUNT);
 //是对应的该种方法产生的值为1，其余为空或0
 // var inside = new Array(MAX_FLOOR);
 var inside = new Array(ELE_COUNT); // <- 2D 第一个下标第几部电梯 第二个下标第几层
-var outsideUp = new Array(MAX_FLOOR);
-var outsideDown = new Array(MAX_FLOOR);
+var outsideUp = new Array(ELE_COUNT);
+var outsideDown = new Array(ELE_COUNT);
 
 var INSIDE = 0;
 var OUTSIDE_UP = 1;
@@ -40,6 +40,8 @@ function init() {
     for (var i = 0; i < ELE_COUNT; i++) {
         queue[i] = new Array();
         inside[i] = new Array(MAX_FLOOR);
+        outsideDown[i] = new Array(MAX_FLOOR);
+        outsideUp[i] = new Array(MAX_FLOOR);
         goingup[i] = true;
         running[i] = false;
         currentFloor[i] = 1;
@@ -105,13 +107,63 @@ function dialToAll(floor) {
     }
 }
 
+// 传入呼层数和呼层方法
+// function choseElevator(floor, way) {
+//     var minDistance = 0;
+//     for (var i = 0; i < ELE_COUNT; i++) {
+//         if(goingup[])
+//     }
+// }
+
 // key binding
 $(".goup").click(function(){
     var this_id = $(this).parent().parent()[0].id; //只有通过id访问是一个元素，通过标签和class访问的是一个数组（元素列表）
     var pressedFloor = Number(this_id.substr(5)); //从下标为5的位置开始取
-    if (outsideUp[pressedFloor] != 1) {
-        outsideUp[pressedFloor] = 1;
-        dialToAll(pressedFloor);
+    var minDistance = 2 * (MAX_FLOOR - MIN_FLOOR); // 可能出现的最大步数
+    var distance = 0;
+    var elevatorToPush = 0;
+    // 希望在最短步数（不是最短时间）达到呼层
+    // 计算到呼层的步数：
+    // if没有运动 else：
+    // if当前层在呼层的下面或当前层
+    //      电梯向上运动 
+    //      电梯向下运动
+    // else当前层在呼层的上面
+    //      电梯向上运动
+    //      电梯向下运动
+    for (var i = 0; i < ELE_COUNT; i++) {
+        if (!running[i]) {
+            distance = Math.abs(pressedFloor - currentFloor[i]);
+        }
+        else {
+            var minInQueue = getMinInQueue(i);
+            var maxInQueue = getMaxInQueue(i);
+            if (currentFloor[i] <= pressedFloor) {
+                if (goingup[i]) {
+                    distance = pressedFloor - currentFloor[i];
+                }   
+                else {
+                    distance = currentFloor[i] - minInQueue + pressedFloor - minInQueue;
+                }
+            }
+            else {
+                if (goingup[i]) {
+                    distance = maxInQueue - currentFloor[i] + maxInQueue - minInQueue + Math.abs(minInQueue - pressedFloor);
+                }
+                else {
+                    distance = currentFloor[i] - minInQueue + Math.abs(minInQueue - pressedFloor);
+                }
+            }
+        }
+        if (distance < minDistance) {
+            minDistance = distance;
+            elevatorToPush = i;
+        }
+    }
+
+    if (outsideUp[elevatorToPush][pressedFloor] != 1) {
+        outsideUp[elevatorToPush][pressedFloor] = 1;
+        dial(elevatorToPush, pressedFloor);
         $(this).addClass("on"); //改变上下按钮为白色
     }
 });
@@ -119,9 +171,43 @@ $(".goup").click(function(){
 $(".godown").click(function(){
     var this_id = $(this).parent().parent()[0].id;
     var pressedFloor = Number(this_id.substr(5));
-    if (outsideDown[pressedFloor] != 1) {
-        outsideDown[pressedFloor] = 1;
-        dialToAll(pressedFloor);
+    var minDistance = 2 * (MAX_FLOOR - MIN_FLOOR); // 可能出现的最大步数
+    var distance = 0;
+    var elevatorToPush = 0;
+
+    for (var i = 0; i < ELE_COUNT; i++) {
+        if (!running[i]) {
+            distance = Math.abs(currentFloor[i] - pressedFloor);
+        }
+        else {
+            var minInQueue = getMinInQueue(i);
+            var maxInQueue = getMaxInQueue(i);
+            if (currentFloor[i] >= pressedFloor) {
+                if (goingup[i]) {
+                    distance = maxInQueue - currentFloor[i] + maxInQueue - pressedFloor;
+                }
+                else {
+                    distance = currentFloor[i] - pressedFloor;
+                }
+            }
+            else {
+                if (goingup[i]) {
+                    distance = maxInQueue - currentFloor[i] + Math.abs(maxInQueue - pressedFloor);
+                }
+                else {
+                    distance = currentFloor[i] - minInQueue + maxInQueue - minInQueue + Math.abs(maxInQueue - pressedFloor);
+                }
+            }
+        }
+        if (distance < minDistance) {
+            minDistance = distance;
+            elevatorToPush = i;
+        }
+    }
+    
+    if (outsideDown[elevatorToPush][pressedFloor] != 1) {
+        outsideDown[elevatorToPush][pressedFloor] = 1;
+        dial(elevatorToPush, pressedFloor);
         $(this).addClass("on"); //加在现有的class前
     }
 });
@@ -209,38 +295,30 @@ function run(n) {
                 NeedToStop[n] = true;
             }
             if (goingup[n]) { 
-                if (outsideUp[currentFloor[n]] == 1) {
+                if (outsideUp[n][currentFloor[n]] == 1) {
                     lightsOut(n, currentFloor[n], OUTSIDE_UP);
-                    for (var i = 0; i < ELE_COUNT; i++) {
-                        removeFromQueue(i, currentFloor[n]);
-                    }
-                    outsideUp[currentFloor[n]] = 0;
+                    removeFromQueue(n, currentFloor[n]);
+                    outsideUp[n][currentFloor[n]] = 0;
                     NeedToStop[n] = true;
                 }
-                if (outsideDown[currentFloor[n]] == 1 && currentFloor[n] == getMaxInQueue(n)) {
+                if (outsideDown[n][currentFloor[n]] == 1 && currentFloor[n] == getMaxInQueue(n)) {
                     lightsOut(n, currentFloor[n], OUTSIDE_DOWN);
-                    for (var i = 0; i < ELE_COUNT; i++) {
-                        removeFromQueue(i, currentFloor[n]);
-                    }
-                    outsideDown[currentFloor[n]] = 0;
+                    removeFromQueue(n, currentFloor[n]);
+                    outsideDown[n][currentFloor[n]] = 0;
                     NeedToStop[n] = true;
                 } 
             }
             else {
-                if (outsideDown[currentFloor[n]] == 1) {
+                if (outsideDown[n][currentFloor[n]] == 1) {
                     lightsOut(n, currentFloor[n], OUTSIDE_DOWN);
-                    for (var i = 0; i < ELE_COUNT; i++) {
-                        removeFromQueue(i, currentFloor[n]);
-                    }
-                    outsideDown[currentFloor[n]] = 0;
+                    removeFromQueue(n, currentFloor[n]);
+                    outsideDown[n][currentFloor[n]] = 0;
                     NeedToStop[n] = true;
                 }
-                if (outsideUp[currentFloor[n]] == 1 && currentFloor[n] == getMinInQueue(n)) {
+                if (outsideUp[n][currentFloor[n]] == 1 && currentFloor[n] == getMinInQueue(n)) {
                     lightsOut(n, currentFloor[n], OUTSIDE_UP);
-                    for (var i = 0; i < ELE_COUNT; i++) {
-                        removeFromQueue(i, currentFloor[n]);
-                    }
-                    outsideUp[currentFloor[n]] = 0;
+                    removeFromQueue(n, currentFloor[n]);
+                    outsideUp[n][currentFloor[n]] = 0;
                     NeedToStop[n] = true;
                 }
             }
@@ -390,5 +468,6 @@ function removeFromQueue(n, floor) {
         }
     }
 }
+
 
 

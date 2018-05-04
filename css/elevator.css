@@ -6,14 +6,14 @@ html, body {
 body {
     background-color: #141517;
 }
-.outsideView {
+#outsideView {
     float: left;
     box-sizing: border-box;
-    width: 440px;
-    height: 540px;
-    padding: 20px;
+    width: 10%;
+    height: 800px;
+    padding: 5px;
     background-color: #1D1F21;
-    margin: 20px 10px 20px 20px;
+    margin: 10px 10px 10px 10px;
 }
 .insideView {
     float: left;
@@ -22,11 +22,11 @@ body {
     height: 800px;
     padding: 5px;
     background-color: #1D1F21;
-    margin: 20px 20px 20px 20px;
+    margin: 10px 10px 10px 10px;
 }
 
 /* Outside View */
-#indicator {
+/*#indicator {
     list-style: none;
     border: 1px solid #47484B;
     border-radius: 1rem;
@@ -41,8 +41,9 @@ body {
 }
 #indicator li.current {
     color: #FFF;
-}
+}*/
 #bell {
+    margin-left: 7px;
     width: 100%;
     font-family: Segoe, Roboto, Helvetica, "Microsoft YaHei", Arial, sans-serif;
 }
@@ -54,9 +55,10 @@ body {
     color: #FFF;
     text-decoration: none;
 }
-#bell a:hover {
+/*#bell a:hover {
     text-decoration: underline;
-}
+}*/
+
 #bell tr:hover {
     background-color: #27292c;
 }
@@ -65,16 +67,8 @@ body {
     padding: 0;
     color: #47484B;
     /*color: #77384B;*/
-    font-size: 1rem;
+    font-size: 0.8rem;
     line-height: 1.8em;
-}
-#bell tr td:first-child {
-    color: #FFF;
-    /*color: #F6F;*/
-}
-#bell tr:last-child td{
-    border-top: 1px solid #47484B;
-    /*border-top: 1px solid #24484B;*/
 }
 
 /* Indise View */
@@ -170,7 +164,7 @@ p {
     color: #262626;
     font-family: Segoe, Roboto, Helvetica, "Microsoft YaHei", Arial, sans-serif;
     text-align: center;
-    line-height: 28px;
+    line-height: 30px;
 }
 .button:hover {
     cursor: pointer;
@@ -179,3 +173,12 @@ p {
 .button.pressed {
     background-color: #FFF;
 }
+.floor .button {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    margin: 5% 0 5% 0;
+}
+
+
+

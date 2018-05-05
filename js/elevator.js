@@ -92,28 +92,13 @@ function openDoorbyButton(n) {
 function dial(n, floor) {
     // if ( queue.indexOf(floor) < 0 ) {   // Don't add if already exist.
         queue[n].push(floor);
-        console.log(queue[n]);
+        // console.log(queue[n]);
         // queue.sort(); //排不排序都一样吧？！？！！这个电梯分明就是有毒 就只会上完下 下完上 门外按的是上是下都不管的 这傻逼电梯
         if(!running[n]) {
             checkStatus(n);
         }
 }
-function dialToAll(floor) {
-    for (var i = 0; i < ELE_COUNT; i++) {
-        queue[i].push(floor);
-        if(!running[i]) {
-            checkStatus(i);
-        }
-    }
-}
 
-// 传入呼层数和呼层方法
-// function choseElevator(floor, way) {
-//     var minDistance = 0;
-//     for (var i = 0; i < ELE_COUNT; i++) {
-//         if(goingup[])
-//     }
-// }
 
 // key binding
 $(".goup").click(function(){
@@ -214,25 +199,25 @@ $(".godown").click(function(){
 
 $(".dial .button").click(function(){
     var this_class = $(this)[0].className;
-    console.log(this_class);
+    // console.log(this_class);
     var parent_id = $(this).parent()[0].id;
-    console.log(parent_id);
+    // console.log(parent_id);
     var pressedFloor = Number(this_class.substr(11));
     var n = Number(parent_id.substr(7));
-    console.log(pressedFloor + " " +n);
+    // console.log(pressedFloor + " " +n);
     if (inside[n][pressedFloor]!= 1) {
         inside[n][pressedFloor] = 1;
         dial(n, pressedFloor);
         $(this).addClass("pressed");       
     }
 });
-// kill the lights when arrived
-function lightsOut(n, floor, way) {
+//  达到呼层后关灯
+function lightsOff(n, floor, way) {
     if (way == OUTSIDE_UP && $("#floor" + floor + " td a")[0]) 
-        $("#floor" + floor + " td a")[0].className = "goup";
+        $("#floor" + floor + " td a")[0].className = "goup button";
         // $("#floor" + floor + " td a").removeClass("on"); //上下同时都灭了 不可行
     else if (way == OUTSIDE_DOWN && $("#floor" + floor + " td a")[1])
-        $("#floor" + floor + " td a")[1].className = "godown";
+        $("#floor" + floor + " td a")[1].className = "godown button";
 
     else if (way == INSIDE && $("#dial" + floor))
         $("#dialpad" + n + " .dial" + floor).removeClass("pressed");
@@ -260,7 +245,7 @@ function updateFloorInfo(n) {
 
     //更新外部指示器上的currentFloor
     // $("#indicator li.current").removeClass("current");
-    // $("#indicator li")[currentFloor].className = "current"; //不用addClass和函数lightsOut原因一样
+    // $("#indicator li")[currentFloor].className = "current"; //不用addClass和函数lightsOff原因一样
 
     //门的上下移动效果
     var ElevatorMove = (currentFloor[n] - 1) * 790 * 0.05;
@@ -271,6 +256,28 @@ function updateFloorInfo(n) {
     if(currentFloor[n] > 0) {
         // $("#floorTitle").text(""+currentFloor);
         $("#floorOnScreen" + n).text(""+currentFloor[n]);
+    }
+
+    //更新内部显示屏的上下状态灯
+    if (!running[n]) {
+        // if ($("#uplight"+n).className) {
+            $("#uplight"+n).removeClass("turnon");
+        // }
+        // if ($("#downlight"+n).className) {
+            $("#downlight"+n).removeClass("turnon");
+        // }
+    }
+    else if (goingup[n]) {
+        // if ($("#downlight"+n).className) {
+            $("#downlight"+n).removeClass("turnon");
+        // }
+        $("#uplight" + n).addClass("turnon");
+    }
+    else {
+        // if ($("#uplight"+n).className) {
+        $("#uplight"+n).removeClass("turnon");
+        // }
+        $("#downlight" +n).addClass("turnon");
     }
     // } else {
     //     $("#floorTitle").text("B"+(1-currentFloor));
@@ -289,20 +296,20 @@ function run(n) {
         NeedToStop[n] = false; 
         if (queue[n].indexOf(currentFloor[n]) > -1) {    // if elevator is right where it's called
             if (inside[n][currentFloor[n]] == 1) { 
-                lightsOut(n, currentFloor[n], INSIDE);
+                lightsOff(n, currentFloor[n], INSIDE);
                 removeFromQueue(n, currentFloor[n]);
                 inside[n][currentFloor[n]] = 0;
                 NeedToStop[n] = true;
             }
             if (goingup[n]) { 
                 if (outsideUp[n][currentFloor[n]] == 1) {
-                    lightsOut(n, currentFloor[n], OUTSIDE_UP);
+                    lightsOff(n, currentFloor[n], OUTSIDE_UP);
                     removeFromQueue(n, currentFloor[n]);
                     outsideUp[n][currentFloor[n]] = 0;
                     NeedToStop[n] = true;
                 }
                 if (outsideDown[n][currentFloor[n]] == 1 && currentFloor[n] == getMaxInQueue(n)) {
-                    lightsOut(n, currentFloor[n], OUTSIDE_DOWN);
+                    lightsOff(n, currentFloor[n], OUTSIDE_DOWN);
                     removeFromQueue(n, currentFloor[n]);
                     outsideDown[n][currentFloor[n]] = 0;
                     NeedToStop[n] = true;
@@ -310,13 +317,13 @@ function run(n) {
             }
             else {
                 if (outsideDown[n][currentFloor[n]] == 1) {
-                    lightsOut(n, currentFloor[n], OUTSIDE_DOWN);
+                    lightsOff(n, currentFloor[n], OUTSIDE_DOWN);
                     removeFromQueue(n, currentFloor[n]);
                     outsideDown[n][currentFloor[n]] = 0;
                     NeedToStop[n] = true;
                 }
                 if (outsideUp[n][currentFloor[n]] == 1 && currentFloor[n] == getMinInQueue(n)) {
-                    lightsOut(n, currentFloor[n], OUTSIDE_UP);
+                    lightsOff(n, currentFloor[n], OUTSIDE_UP);
                     removeFromQueue(n, currentFloor[n]);
                     outsideUp[n][currentFloor[n]] = 0;
                     NeedToStop[n] = true;
@@ -350,11 +357,12 @@ function run(n) {
         }
         checkStatus(n);
     }
+    updateFloorInfo(n);
 }
 
 function ding(floor, way) {
     
-    // lightsOut(floor, way);
+    // lightsOff(floor, way);
     // removeFromQueue(queue, floor);
     // openDoor();
 
@@ -388,10 +396,10 @@ function checkStatus(n) {
 
 // buttons
 $(".maintain").click(function(){
-    alert("Calling Maintainance ...");
+    alert("正在呼救！！");
 });
 $(".emergency").click(function(){
-    alert("Calling Emergency ...");
+    alert("紧急情况！！");
 });
 
 $(".open").click(function(){

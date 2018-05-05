@@ -59,9 +59,9 @@ body {
     text-decoration: underline;
 }*/
 
-#bell tr:hover {
+/*#bell tr:hover {
     background-color: #27292c;
-}
+}*/
 #bell td {
     width: 25%;
     padding: 0;
@@ -151,7 +151,7 @@ p {
     color: #616267;
     font-size: 3em;
     font-family: Segoe, Roboto, Helvetica, "Microsoft YaHei", Arial, sans-serif;
-    line-height: 155px;
+/*    line-height: 155px;*/
 }
 .button {
     float: left;
@@ -179,6 +179,10 @@ p {
     line-height: 30px;
     margin: 5% 0 5% 0;
 }
-
-
-
+.updownlight {
+    padding: 5px 40% 5px 40%;
+    color:  #3e3e3e
+}
+.updownlight .turnon{
+    color:white
+}

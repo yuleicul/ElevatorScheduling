@@ -1,4 +1,4 @@
-// Allow some console output for debuging.
+﻿// Allow some console output for debuging.
 var DEBUG_MODE = true;
 
 // 电梯数：第0 1 2 3 4部

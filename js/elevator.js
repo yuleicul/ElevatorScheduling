@@ -67,7 +67,7 @@ function dial(n, floor) {
 }
 
 // 点击事件的函数功能：将外部按钮的dial加入到其中一台电梯中
-// 算法：加入到离呼层最短距离（步数）的电梯中
+// 算法：加入到离呼层最短时间的电梯中
 $(".goup").click(function(){
     var this_id = $(this).parent()[0].id; //只有通过id访问是一个元素，通过标签和class访问的是一个数组（元素列表）
     var pressedFloor = Number(this_id.substr(5)); //从下标为5的位置开始取
@@ -78,8 +78,8 @@ $(".goup").click(function(){
         var minDistance = 2 * (MAX_FLOOR - MIN_FLOOR); // 可能出现的最大步数
         var distance = 0;
         var elevatorToPush = 0;
-        // 希望在最短步数（不是最短时间）达到呼层
-        // 计算到呼层的步数：
+        // 希望在最短时间内达到呼层
+        // 计算到呼层的步数（1s/步）+5s*当中停下的楼层：
         // if没有运动 else：
         // if当前层在呼层的下面或当前层
         //      电梯向上运动 
@@ -96,18 +96,18 @@ $(".goup").click(function(){
                 var maxInQueue = getMaxInQueue(i);
                 if (currentFloor[i] <= pressedFloor) {
                     if (goingUp[i]) {
-                        distance = pressedFloor - currentFloor[i];
+                        distance = pressedFloor - currentFloor[i] + 5 * betweenCount(pressedFloor, currentFloor[i], i);
                     }   
                     else {
-                        distance = currentFloor[i] - minInQueue + pressedFloor - minInQueue;
+                        distance = currentFloor[i] - minInQueue + pressedFloor - minInQueue + 5 * betweenCount(minInQueue, pressedFloor, i);
                     }
                 }
                 else {
                     if (goingUp[i]) {
-                        distance = maxInQueue - currentFloor[i] + maxInQueue - minInQueue + Math.abs(minInQueue - pressedFloor);
+                        distance = maxInQueue - currentFloor[i] + maxInQueue - minInQueue + Math.abs(minInQueue - pressedFloor) + 5 * betweenCount(minDistance, maxInQueue, i);
                     }
                     else {
-                        distance = currentFloor[i] - minInQueue + Math.abs(minInQueue - pressedFloor);
+                        distance = currentFloor[i] - minInQueue + Math.abs(minInQueue - pressedFloor) + 5 * betweenCount(currentFloor[i], minInQueue, i);
                     }
                 }
             }
@@ -145,18 +145,18 @@ $(".godown").click(function(){
                 var maxInQueue = getMaxInQueue(i);
                 if (currentFloor[i] >= pressedFloor) {
                     if (goingUp[i]) {
-                        distance = maxInQueue - currentFloor[i] + maxInQueue - pressedFloor;
+                        distance = maxInQueue - currentFloor[i] + maxInQueue - pressedFloor + 5 * betweenCount(maxInQueue, pressedFloor, i);
                     }
                     else {
-                        distance = currentFloor[i] - pressedFloor;
+                        distance = currentFloor[i] - pressedFloor + 5 * betweenCount(pressedFloor, currentFloor[i], i);
                     }
                 }
                 else {
                     if (goingUp[i]) {
-                        distance = maxInQueue - currentFloor[i] + Math.abs(maxInQueue - pressedFloor);
+                        distance = maxInQueue - currentFloor[i] + Math.abs(maxInQueue - pressedFloor) + 5 * betweenCount(currentFloor[i], maxInQueue, i);
                     }
                     else {
-                        distance = currentFloor[i] - minInQueue + maxInQueue - minInQueue + Math.abs(maxInQueue - pressedFloor);
+                        distance = currentFloor[i] - minInQueue + maxInQueue - minInQueue + Math.abs(maxInQueue - pressedFloor) + 5 * betweenCount(minDistance, maxInQueue, i);
                     }
                 }
             }
@@ -260,7 +260,7 @@ function run(n) {
                         }, 2000);
                     }, 2000);
                 }, 1000); 
-                NeedToStop[n] = false;        
+                // NeedToStop[n] = false;        
             }
             else {
                 goingUp[n] ? moveUp(n) : moveDown(n);
@@ -286,7 +286,8 @@ function closeDoor(n) {
 }
 
 function openDoorbyButton(n) {
-    if (timer[n]) {
+    if (NeedToStop[n]) {
+        if (timer[n]) {
         clearInterval(timer[n]);
     }
     openDoor(n);
@@ -308,7 +309,11 @@ function openDoorbyButton(n) {
                     }, 2000);
                 }, 1000);
             }, 1000)
-        }, 1000)
+        }, 1000)  
+    }
+    else {
+        alert("危险！电梯运动过程中禁止开门！");
+    }
 }
 
 // 达到呼层后相应按钮的灯熄灭
@@ -442,6 +447,24 @@ function removeFromQueue(n, floor) {
             break;
         }
     }
+}
+
+// calculate the count of number between a and b in the queue[n] ordered
+// a > b or a < b is ok
+function betweenCount(a, b, n) {
+    if (a > b) {
+        var temp = a;
+        a = b;
+        b = temp;
+    }
+
+    var betweenNum = [];
+    for (var i in queue[n]) {
+        if (queue[n][i] <= b && queue[n][i] >= a && betweenNum.indexOf(queue[n][i] < 0)) {
+            betweenNum.push(queue[n][i]);
+        }
+    }
+    return betweenNum.length;
 }
 
 
